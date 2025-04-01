@@ -6,6 +6,12 @@ Un mini-jeu web interactif visant à sensibiliser les joueurs aux enjeux écolog
 
 Dans ce jeu, vous incarnez un personnage qui doit nettoyer une plage en collectant différents types de déchets. À chaque déchet collecté, vous découvrez des informations importantes sur l'impact environnemental et des conseils pour adopter des comportements plus écologiques.
 
+## 🚀 Installation
+
+1. Clonez le repository
+2. Ouvrez le fichier `index.html` dans votre navigateur
+3. Cliquez n'importe où sur la page pour démarrer la musique de fond
+
 ## ✨ Fonctionnalités
 
 - 🎯 Collecte de différents types de déchets (plastiques, fruits, bouteilles, etc.)
@@ -51,12 +57,6 @@ Le jeu inclut des messages éducatifs variés pour différents types de déchets
 - Design responsive qui s'adapte à tous les écrans
 - Animations fluides pour une expérience immersive
 - Thème visuel cohérent avec le message écologique
-
-## 🚀 Installation
-
-1. Clonez le repository
-2. Ouvrez le fichier `index.html` dans votre navigateur
-3. Cliquez n'importe où sur la page pour démarrer la musique de fond
 
 ## 🎯 Objectifs Pédagogiques
 
