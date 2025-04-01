@@ -10,12 +10,14 @@ backgroundImage.src = 'images/map.png';
 const playerImages = {
     still: new Image(),
     walk: new Image(),
-    run: new Image()
+    run: new Image(),
+    trash_bag: new Image()
 };
 
 playerImages.still.src = 'images/player/player_still.png';
 playerImages.walk.src = 'images/player/player_walk.png';
 playerImages.run.src = 'images/player/player_run.png';
+playerImages.trash_bag.src = 'images/trash_bag.png';
 
 // Fonction pour redimensionner le canvas en plein écran
 function resizeCanvas() {
@@ -174,23 +176,46 @@ function updatePlayer() {
 // Fonction pour dessiner le joueur
 function drawPlayer() {
     const image = playerImages[player.state];
-    if (!image.complete) return; // Attendre que l'image soit chargée
+    const trashBag = playerImages.trash_bag;
+    if (!image.complete || !trashBag.complete) return; // Attendre que les images soient chargées
     
     ctx.save();
     
     // Calculer les dimensions en conservant le ratio d'aspect
     const playerWidth = player.size;
     const playerHeight = (image.height / image.width) * playerWidth;
+    const trashBagWidth = playerWidth * 0.8; // Le sac est légèrement plus petit que le joueur
+    const trashBagHeight = (trashBag.height / trashBag.width) * trashBagWidth;
     
     // Positionner le point de rotation au centre du joueur
     ctx.translate(player.x + playerWidth/2, player.y + playerHeight/2);
+    
+    // Dessiner le sac poubelle derrière le joueur
+    ctx.save();
+    // Ajuster la position du sac en fonction de la direction
+    const bagOffsetX = player.direction === 'right' ? -playerWidth/2 : playerWidth/2;
+    ctx.translate(bagOffsetX, playerHeight/3);
+    // Rotation légère du sac pour un effet plus naturel
+    ctx.rotate(player.direction === 'right' ? -0.1 : 0.1);
+    // Inverser le sac si le joueur va vers la gauche
+    if (player.direction === 'left') {
+        ctx.scale(-1, 1);
+    }
+    ctx.drawImage(
+        trashBag,
+        -trashBagWidth/2,
+        -trashBagHeight/2,
+        trashBagWidth,
+        trashBagHeight
+    );
+    ctx.restore();
     
     // Inverser horizontalement si le joueur va vers la gauche
     if (player.direction === 'left') {
         ctx.scale(-1, 1);
     }
     
-    // Dessiner l'image
+    // Dessiner le joueur
     ctx.drawImage(
         image,
         -playerWidth/2,
@@ -480,4 +505,5 @@ function checkAllImagesLoaded() {
 backgroundImage.onload = checkAllImagesLoaded;
 playerImages.still.onload = checkAllImagesLoaded;
 playerImages.walk.onload = checkAllImagesLoaded;
-playerImages.run.onload = checkAllImagesLoaded; 
+playerImages.run.onload = checkAllImagesLoaded;
+playerImages.trash_bag.onload = checkAllImagesLoaded; 
