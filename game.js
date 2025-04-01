@@ -86,7 +86,12 @@ const trash = {
         water_bottle: new Image(),
         milk_bottle: new Image(),
         orange: new Image(),
-        banana: new Image()
+        banana: new Image(),
+        soda_bottle: new Image(),
+        tissue: new Image(),
+        straw: new Image(),
+        plastic_water_bottle: new Image(),
+        can: new Image()
     }
 };
 
@@ -102,6 +107,11 @@ trash.images.water_bottle.src = 'images/waste/water_bottle.png';
 trash.images.milk_bottle.src = 'images/waste/milk_bottle.png';
 trash.images.orange.src = 'images/waste/orange.png';
 trash.images.banana.src = 'images/waste/Banana.png';
+trash.images.soda_bottle.src = 'images/waste/soda_bottle.png';
+trash.images.tissue.src = 'images/waste/tissue.png';
+trash.images.straw.src = 'images/waste/straw.png';
+trash.images.plastic_water_bottle.src = 'images/waste/plastic_water_bottle.png';
+trash.images.can.src = 'images/waste/can.png';
 
 // Score
 let score = 0;
@@ -432,6 +442,41 @@ const messages = {
                 "Le transport des avocats, souvent importés de pays lointains, génère une quantité importante de CO2. Acheter local et de saison permet de limiter cet impact environnemental.",
                 "Les avocats trop mûrs peuvent être utilisés dans des recettes comme le guacamole, les smoothies ou même en masque capillaire ! Rien ne se perd, tout se transforme.",
                 "En soutenant l'agriculture raisonnée et les circuits courts, nous favorisons une consommation plus respectueuse de l'environnement et des producteurs locaux."
+            ],
+            soda_bottle: [
+                "Les bouteilles de soda en plastique sont l'un des déchets les plus polluants. Une seule bouteille met environ 400 ans à se dégrader dans la nature.",
+                "Le recyclage d'une bouteille de soda permet d'économiser l'énergie nécessaire pour alimenter une ampoule pendant 3 heures. Chaque bouteille recyclée compte !",
+                "Les bouteilles de soda jetées dans la nature libèrent des microplastiques qui contaminent les sols et les cours d'eau, affectant toute la chaîne alimentaire.",
+                "En France, seules 57% des bouteilles en plastique sont recyclées. Augmenter ce taux est essentiel pour réduire notre impact environnemental.",
+                "Privilégier les boissons en bouteilles consignées ou utiliser une gourde réutilisable permet de réduire considérablement la production de déchets plastiques."
+            ],
+            tissue: [
+                "Les mouchoirs en papier, bien que biodégradables, contribuent à la déforestation. Un mouchoir en tissu réutilisable est une alternative écologique.",
+                "La production de mouchoirs en papier nécessite beaucoup d'eau et d'énergie. Réduire leur utilisation permet de préserver ces ressources.",
+                "Les mouchoirs jetés dans la nature peuvent mettre plusieurs mois à se dégrader. Les jeter dans une poubelle est essentiel pour maintenir la propreté de notre environnement.",
+                "En France, nous utilisons en moyenne 6 kg de mouchoirs en papier par personne et par an. Réduire cette consommation est un geste simple pour l'environnement.",
+                "Les mouchoirs en tissu lavables sont non seulement écologiques mais aussi économiques sur le long terme."
+            ],
+            straw: [
+                "Les pailles en plastique sont l'un des déchets les plus dangereux pour la faune marine. Une paille peut mettre jusqu'à 200 ans à se dégrader.",
+                "En France, environ 3,2 millions de pailles sont utilisées chaque jour dans les restaurants. Réduire leur utilisation est crucial pour l'environnement.",
+                "Les pailles en plastique font partie des 10 déchets les plus retrouvés sur les plages. Chaque paille ramassée sauve potentiellement la vie d'un animal marin.",
+                "Les alternatives aux pailles en plastique sont nombreuses : pailles en bambou, en métal, en verre ou même comestibles. Choisir ces alternatives fait la différence.",
+                "Une paille en plastique peut sembler insignifiante, mais multipliée par des millions d'utilisateurs, son impact environnemental devient considérable."
+            ],
+            plastic_water_bottle: [
+                "Une bouteille d'eau en plastique met environ 400 ans à se dégrader dans la nature, libérant des microplastiques nocifs pour l'environnement.",
+                "L'eau en bouteille coûte environ 300 fois plus cher que l'eau du robinet, sans être nécessairement plus pure. Une gourde réutilisable est une meilleure solution.",
+                "Le transport des bouteilles d'eau génère une quantité importante de CO2. Boire l'eau du robinet permet de réduire considérablement notre empreinte carbone.",
+                "En France, seules 57% des bouteilles en plastique sont recyclées. Augmenter ce taux est essentiel pour réduire notre impact environnemental.",
+                "Les microplastiques des bouteilles d'eau jetées contaminent les sols et les cours d'eau, affectant toute la chaîne alimentaire."
+            ],
+            can: [
+                "Une canette en aluminium met environ 200 ans à se dégrader dans la nature. Le recyclage permet de réduire considérablement cet impact.",
+                "Le recyclage d'une canette permet d'économiser 95% de l'énergie nécessaire à la production d'une nouvelle canette. C'est un geste simple mais efficace !",
+                "Les canettes jetées dans la nature peuvent blesser les animaux et polluer les sols. Leur recyclage est essentiel pour préserver notre environnement.",
+                "En France, le taux de recyclage des canettes en aluminium est de 67%. Augmenter ce taux permettrait de réduire notre impact environnemental.",
+                "Le recyclage des canettes permet de préserver les ressources naturelles et de réduire les émissions de gaz à effet de serre."
             ]
         };
         
@@ -556,7 +601,7 @@ function gameLoop() {
 
 // Démarrer le jeu une fois que toutes les images sont chargées
 let loadedImages = 0;
-const totalImages = 16; // fond + 3 images du joueur + sac poubelle + 11 images de déchets
+const totalImages = 21; // fond + 3 images du joueur + sac poubelle + 16 images de déchets
 
 function checkAllImagesLoaded() {
     loadedImages++;
@@ -589,4 +634,9 @@ trash.images.tomato.onload = checkAllImagesLoaded;
 trash.images.water_bottle.onload = checkAllImagesLoaded;
 trash.images.milk_bottle.onload = checkAllImagesLoaded;
 trash.images.orange.onload = checkAllImagesLoaded;
-trash.images.banana.onload = checkAllImagesLoaded; 
+trash.images.banana.onload = checkAllImagesLoaded;
+trash.images.soda_bottle.onload = checkAllImagesLoaded;
+trash.images.tissue.onload = checkAllImagesLoaded;
+trash.images.straw.onload = checkAllImagesLoaded;
+trash.images.plastic_water_bottle.onload = checkAllImagesLoaded;
+trash.images.can.onload = checkAllImagesLoaded; 
