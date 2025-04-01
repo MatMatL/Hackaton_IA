@@ -113,9 +113,103 @@ trash.images.straw.src = 'images/waste/straw.png';
 trash.images.plastic_water_bottle.src = 'images/waste/plastic_water_bottle.png';
 trash.images.can.src = 'images/waste/can.png';
 
-// Score
+// Score et points
 let score = 0;
+let points = 0;
 const scoreElement = document.getElementById('score');
+const pointsElement = document.getElementById('points');
+
+// Configuration des améliorations
+const upgrades = {
+    speed: {
+        name: "Vitesse",
+        description: "Augmente la vitesse de déplacement",
+        basePrice: 50,
+        currentLevel: 1,
+        maxLevel: 5,
+        effect: () => {
+            player.speed *= 1.2;
+        }
+    },
+    collectRange: {
+        name: "Portée",
+        description: "Augmente la distance de collecte",
+        basePrice: 75,
+        currentLevel: 1,
+        maxLevel: 5,
+        effect: () => {
+            trash.collectRange *= 1.2;
+        }
+    },
+    spawnSpeed: {
+        name: "Vitesse de Spawn",
+        description: "Augmente la fréquence d'apparition des déchets",
+        basePrice: 100,
+        currentLevel: 1,
+        maxLevel: 3,
+        effect: () => {
+            // Réduire l'intervalle de spawn de 20%
+            trash.spawnInterval = Math.max(500, trash.spawnInterval * 0.8);
+            // Redémarrer le timer de spawn
+            clearInterval(trash.spawnTimer);
+            trash.spawnTimer = setInterval(createTrash, trash.spawnInterval);
+        }
+    },
+    particleEffect: {
+        name: "Effets Visuels",
+        description: "Augmente le nombre de particules lors de la collecte",
+        basePrice: 50,
+        currentLevel: 1,
+        maxLevel: 3,
+        effect: () => {
+            // Augmente le nombre de particules créées
+            particles.createParticle = function(x, y) {
+                const particleCount = 10 + (this.currentLevel - 1) * 5;
+                for (let i = 0; i < particleCount; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 2 + Math.random() * 2;
+                    const size = 5 + Math.random() * 5;
+                    
+                    this.items.push({
+                        x,
+                        y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        size,
+                        life: 1,
+                        color: `hsl(${Math.random() * 360}, 100%, 50%)`
+                    });
+                }
+            };
+        }
+    }
+};
+
+// Fonction pour calculer le prix d'une amélioration
+function calculateUpgradePrice(upgrade) {
+    return Math.floor(upgrade.basePrice * Math.pow(1.5, upgrade.currentLevel - 1));
+}
+
+// Fonction pour acheter une amélioration
+function buyUpgrade(upgradeKey) {
+    const upgrade = upgrades[upgradeKey];
+    if (!upgrade || upgrade.currentLevel >= upgrade.maxLevel) return false;
+    
+    const price = calculateUpgradePrice(upgrade);
+    if (points >= price) {
+        points -= price;
+        upgrade.currentLevel++;
+        upgrade.effect();
+        updatePointsDisplay();
+        return true;
+    }
+    return false;
+}
+
+// Fonction pour mettre à jour l'affichage des points
+function updatePointsDisplay() {
+    pointsElement.textContent = points;
+}
 
 // Gestion des touches
 const keys = {
@@ -499,7 +593,9 @@ function collectTrash() {
             const distance = checkDistance(player, item);
             if (distance < trash.collectRange) {
                 score++;
+                points += 5; // Ajouter 5 points par déchet collecté
                 scoreElement.textContent = score;
+                updatePointsDisplay();
                 
                 // Créer des particules
                 for (let i = 0; i < 10; i++) {
@@ -610,8 +706,8 @@ function checkAllImagesLoaded() {
         player.x = (canvas.width - player.size) / 2;
         player.y = (canvas.height - player.size) / 2;
         
-        // Démarrer le jeu
-        setInterval(createTrash, trash.spawnInterval);
+        // Démarrer le jeu avec le timer de spawn
+        trash.spawnTimer = setInterval(createTrash, trash.spawnInterval);
         gameLoop();
     }
 }

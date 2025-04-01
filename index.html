@@ -9,8 +9,36 @@
 </head>
 <body>
     <div class="game-container">
-        <div class="score">Déchets collectés: <span id="score">0</span></div>
+        <div class="score-container">
+            <div class="score">Déchets collectés: <span id="score">0</span></div>
+            <div class="points">Points: <span id="points">0</span></div>
+        </div>
         <canvas id="gameCanvas"></canvas>
+        <div class="shop-container">
+            <h2>Boutique</h2>
+            <div class="upgrades">
+                <div class="upgrade-item" onclick="buyUpgrade('speed')">
+                    <h3>Vitesse</h3>
+                    <p>Augmente la vitesse de déplacement</p>
+                    <span class="price">50 points</span>
+                </div>
+                <div class="upgrade-item" onclick="buyUpgrade('collectRange')">
+                    <h3>Portée</h3>
+                    <p>Augmente la distance de collecte</p>
+                    <span class="price">75 points</span>
+                </div>
+                <div class="upgrade-item" onclick="buyUpgrade('spawnSpeed')">
+                    <h3>Vitesse de Spawn</h3>
+                    <p>Augmente la fréquence d'apparition des déchets</p>
+                    <span class="price">100 points</span>
+                </div>
+                <div class="upgrade-item" onclick="buyUpgrade('particleEffect')">
+                    <h3>Effets Visuels</h3>
+                    <p>Augmente le nombre de particules</p>
+                    <span class="price">50 points</span>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="game.js"></script>
 </body>
