@@ -515,13 +515,36 @@ function gameLoop() {
         const alpha = Math.min(1, timeLeft / 1000); // Fade out sur la dernière seconde
         
         ctx.save();
-        ctx.fillStyle = `rgba(0, 0, 0, ${0.7 * alpha})`;
-        ctx.fillRect(10, canvas.height - 100, canvas.width - 20, 80);
+        // Fond plus grand et plus opaque
+        ctx.fillStyle = `rgba(0, 0, 0, ${0.8 * alpha})`;
+        ctx.fillRect(10, canvas.height - 180, canvas.width - 20, 150);
         
+        // Texte plus grand et en blanc
         ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.font = '16px Arial';
+        ctx.font = 'bold 28px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText(messages.current, canvas.width / 2, canvas.height - 60);
+        
+        // Diviser le message en lignes si trop long
+        const words = messages.current.split(' ');
+        let lines = [];
+        let currentLine = words[0];
+        
+        for (let i = 1; i < words.length; i++) {
+            const width = ctx.measureText(currentLine + ' ' + words[i]).width;
+            if (width < canvas.width - 60) {
+                currentLine += ' ' + words[i];
+            } else {
+                lines.push(currentLine);
+                currentLine = words[i];
+            }
+        }
+        lines.push(currentLine);
+        
+        // Afficher chaque ligne avec plus d'espacement
+        lines.forEach((line, index) => {
+            ctx.fillText(line, canvas.width / 2, canvas.height - 120 + (index * 35));
+        });
+        
         ctx.restore();
     } else if (messages.current) {
         messages.current = null;
