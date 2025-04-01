@@ -7,6 +7,18 @@ const backgroundMusic = new Audio('sound/background_music.mp3');
 backgroundMusic.loop = true; // La musique se répétera en boucle
 backgroundMusic.volume = 0.5; // Volume à 50%
 
+// Gestionnaire pour démarrer la musique au premier clic
+let musicStarted = false;
+function startMusic() {
+    if (!musicStarted) {
+        backgroundMusic.play();
+        musicStarted = true;
+        // Supprimer l'écouteur d'événements après le premier clic
+        document.removeEventListener('click', startMusic);
+    }
+}
+document.addEventListener('click', startMusic);
+
 // Chargement de l'image de fond
 const backgroundImage = new Image();
 backgroundImage.src = 'images/map.png';
@@ -95,22 +107,30 @@ const keys = {
     q: false,
     s: false,
     d: false,
-    e: false,
-    shift: false // Pour la course
+    shift: false, // Pour la course
+    space: false // Pour la collecte
 };
 
 // Écouteurs d'événements pour les touches
 window.addEventListener('keydown', (e) => {
-    const key = e.key.toLowerCase();
-    if (keys.hasOwnProperty(key)) {
-        keys[key] = true;
+    if (e.code === 'Space') {
+        keys.space = true;
+    } else {
+        const key = e.key.toLowerCase();
+        if (keys.hasOwnProperty(key)) {
+            keys[key] = true;
+        }
     }
 });
 
 window.addEventListener('keyup', (e) => {
-    const key = e.key.toLowerCase();
-    if (keys.hasOwnProperty(key)) {
-        keys[key] = false;
+    if (e.code === 'Space') {
+        keys.space = false;
+    } else {
+        const key = e.key.toLowerCase();
+        if (keys.hasOwnProperty(key)) {
+            keys[key] = false;
+        }
     }
 });
 
@@ -279,7 +299,7 @@ function drawTrash() {
                 ctx.fillStyle = '#FFFFFF';
                 ctx.font = '12px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText('Appuyez sur E', item.x, item.y - trash.size - 5);
+                ctx.fillText('Appuyez sur ESPACE', item.x, item.y - trash.size - 5);
                 ctx.restore();
             }
         }
@@ -422,7 +442,7 @@ const messages = {
 
 // Fonction pour collecter les déchets
 function collectTrash() {
-    if (keys.e) {
+    if (keys.space) {
         for (let i = trash.items.length - 1; i >= 0; i--) {
             const item = trash.items[i];
             const distance = checkDistance(player, item);
@@ -473,7 +493,7 @@ function gameLoop() {
     updatePlayer();
     drawPlayer();
 
-    // Collecter les déchets si E est pressé
+    // Collecter les déchets si ESPACE est pressé
     collectTrash();
 
     // Mettre à jour et dessiner les particules
@@ -519,11 +539,6 @@ function checkAllImagesLoaded() {
         // Démarrer le jeu
         setInterval(createTrash, trash.spawnInterval);
         gameLoop();
-        
-        // Démarrer la musique de fond
-        backgroundMusic.play().catch(error => {
-            console.log("La lecture automatique de la musique a été bloquée. Cliquez n'importe où pour démarrer la musique.");
-        });
     }
 }
 
