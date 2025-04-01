@@ -103,6 +103,26 @@ window.addEventListener('keyup', (e) => {
     }
 });
 
+// Configuration des particules
+const particles = {
+    items: [],
+    createParticle(x, y) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 2;
+        const size = 5 + Math.random() * 5;
+        
+        this.items.push({
+            x,
+            y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            size,
+            life: 1, // Durée de vie en secondes
+            color: `hsl(${Math.random() * 360}, 100%, 50%)` // Couleur aléatoire
+        });
+    }
+};
+
 // Fonction pour créer un nouveau déchet
 function createTrash() {
     const imageKeys = Object.keys(trash.images);
@@ -210,7 +230,49 @@ function drawTrash() {
             ctx.translate(item.x, item.y);
             ctx.drawImage(image, -trash.size/2, -trash.size/2, trash.size, trash.size);
             ctx.restore();
+
+            // Vérifier si le joueur est à portée
+            const distance = checkDistance(player, item);
+            if (distance < trash.collectRange) {
+                // Dessiner le cercle d'indication
+                ctx.save();
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(item.x, item.y, trash.size, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // Afficher le texte
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Appuyez sur E', item.x, item.y - trash.size - 5);
+                ctx.restore();
+            }
         }
+    });
+}
+
+// Fonction pour mettre à jour les particules
+function updateParticles() {
+    particles.items = particles.items.filter(particle => {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.life -= 0.02; // Réduire la durée de vie
+        return particle.life > 0;
+    });
+}
+
+// Fonction pour dessiner les particules
+function drawParticles() {
+    particles.items.forEach(particle => {
+        ctx.save();
+        ctx.globalAlpha = particle.life;
+        ctx.fillStyle = particle.color;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
     });
 }
 
@@ -222,6 +284,10 @@ function collectTrash() {
             if (distance < trash.collectRange) {
                 score++;
                 scoreElement.textContent = score;
+                // Créer des particules à la position du déchet collecté
+                for (let i = 0; i < 10; i++) {
+                    particles.createParticle(item.x, item.y);
+                }
                 return false;
             }
             return true;
@@ -243,6 +309,10 @@ function gameLoop() {
 
     // Collecter les déchets si E est pressé
     collectTrash();
+
+    // Mettre à jour et dessiner les particules
+    updateParticles();
+    drawParticles();
 
     // Dessiner les déchets
     drawTrash();
