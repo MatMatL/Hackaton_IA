@@ -2,6 +2,11 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+// Configuration de la musique de fond
+const backgroundMusic = new Audio('sound/background_music.mp3');
+backgroundMusic.loop = true; // La musique se répétera en boucle
+backgroundMusic.volume = 0.5; // Volume à 50%
+
 // Chargement de l'image de fond
 const backgroundImage = new Image();
 backgroundImage.src = 'images/map.png';
@@ -39,7 +44,11 @@ const player = {
     direction: 'right',
     state: 'still',
     animationFrame: 0,
-    animationSpeed: 0.1
+    animationSpeed: 0.1,
+    // Taille initiale du sac
+    trashBagScale: 0.8,
+    // Nombre de déchets avant augmentation de taille
+    trashBagGrowthThreshold: 3
 };
 
 // Configuration des déchets
@@ -173,6 +182,14 @@ function updatePlayer() {
     player.animationFrame += player.animationSpeed;
 }
 
+// Fonction pour calculer la taille du sac en fonction du score
+function calculateTrashBagSize() {
+    const baseScale = 0.8;
+    const growthFactor = 0.15;
+    const newScale = baseScale + (Math.floor(score / player.trashBagGrowthThreshold) * growthFactor);
+    return newScale;
+}
+
 // Fonction pour dessiner le joueur
 function drawPlayer() {
     const image = playerImages[player.state];
@@ -184,7 +201,8 @@ function drawPlayer() {
     // Calculer les dimensions en conservant le ratio d'aspect
     const playerWidth = player.size;
     const playerHeight = (image.height / image.width) * playerWidth;
-    const trashBagWidth = playerWidth * 0.8; // Le sac est légèrement plus petit que le joueur
+    const trashBagScale = calculateTrashBagSize();
+    const trashBagWidth = playerWidth * trashBagScale; // Le sac grossit avec le score
     const trashBagHeight = (trashBag.height / trashBag.width) * trashBagWidth;
     
     // Positionner le point de rotation au centre du joueur
@@ -192,8 +210,10 @@ function drawPlayer() {
     
     // Dessiner le sac poubelle derrière le joueur
     ctx.save();
-    // Ajuster la position du sac en fonction de la direction
-    const bagOffsetX = player.direction === 'right' ? -playerWidth/2 : playerWidth/2;
+    // Ajuster la position du sac en fonction de la direction et de sa taille
+    const bagOffsetX = player.direction === 'right' ? 
+        -playerWidth/2 - (trashBagWidth * 0.2) : // Décaler vers la gauche si le joueur va à droite
+        playerWidth/2 + (trashBagWidth * 0.2);   // Décaler vers la droite si le joueur va à gauche
     ctx.translate(bagOffsetX, playerHeight/3);
     // Rotation légère du sac pour un effet plus naturel
     ctx.rotate(player.direction === 'right' ? -0.1 : 0.1);
@@ -499,6 +519,11 @@ function checkAllImagesLoaded() {
         // Démarrer le jeu
         setInterval(createTrash, trash.spawnInterval);
         gameLoop();
+        
+        // Démarrer la musique de fond
+        backgroundMusic.play().catch(error => {
+            console.log("La lecture automatique de la musique a été bloquée. Cliquez n'importe où pour démarrer la musique.");
+        });
     }
 }
 
