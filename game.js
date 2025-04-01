@@ -40,6 +40,12 @@ playerImages.trash_bag.src = 'images/trash_bag.png';
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    
+    // Repositionner le joueur au centre lors du redimensionnement
+    if (loadedImages === totalImages) {
+        player.x = (canvas.width - player.size) / 2;
+        player.y = (canvas.height - player.size) / 2;
+    }
 }
 
 // Appeler la fonction de redimensionnement au chargement et lors du redimensionnement de la fenêtre
@@ -527,14 +533,14 @@ function gameLoop() {
 
 // Démarrer le jeu une fois que toutes les images sont chargées
 let loadedImages = 0;
-const totalImages = 4; // fond + 3 images du joueur
+const totalImages = 16; // fond + 3 images du joueur + sac poubelle + 11 images de déchets
 
 function checkAllImagesLoaded() {
     loadedImages++;
     if (loadedImages === totalImages) {
-        // Positionner le joueur au centre de l'écran
-        player.x = canvas.width / 2;
-        player.y = canvas.height / 2;
+        // Positionner le joueur au centre de l'écran en tenant compte de sa taille
+        player.x = (canvas.width - player.size) / 2;
+        player.y = (canvas.height - player.size) / 2;
         
         // Démarrer le jeu
         setInterval(createTrash, trash.spawnInterval);
@@ -542,8 +548,22 @@ function checkAllImagesLoaded() {
     }
 }
 
+// Événements de chargement des images
 backgroundImage.onload = checkAllImagesLoaded;
 playerImages.still.onload = checkAllImagesLoaded;
 playerImages.walk.onload = checkAllImagesLoaded;
 playerImages.run.onload = checkAllImagesLoaded;
-playerImages.trash_bag.onload = checkAllImagesLoaded; 
+playerImages.trash_bag.onload = checkAllImagesLoaded;
+
+// Événements de chargement des images de déchets
+trash.images.papercraft_bag.onload = checkAllImagesLoaded;
+trash.images.papercraft_bag2.onload = checkAllImagesLoaded;
+trash.images.avocado.onload = checkAllImagesLoaded;
+trash.images.apple.onload = checkAllImagesLoaded;
+trash.images.apple2.onload = checkAllImagesLoaded;
+trash.images.apple3.onload = checkAllImagesLoaded;
+trash.images.tomato.onload = checkAllImagesLoaded;
+trash.images.water_bottle.onload = checkAllImagesLoaded;
+trash.images.milk_bottle.onload = checkAllImagesLoaded;
+trash.images.orange.onload = checkAllImagesLoaded;
+trash.images.banana.onload = checkAllImagesLoaded; 
